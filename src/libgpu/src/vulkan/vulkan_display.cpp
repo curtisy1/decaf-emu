@@ -248,6 +248,18 @@ static vk::PhysicalDevice
 choosePhysicalDevice(vk::Instance &instance)
 {
    auto physicalDevices = instance.enumeratePhysicalDevices();
+
+   // Try to find a device that has a discrete GPU
+   // this should increase FPS by quite a bit compared to integrated GPUs
+   for (size_t i = 0; i < physicalDevices.size(); i++) {
+      auto device{ physicalDevices[i] };
+      auto deviceProperties{ device.getProperties() };
+
+      if (deviceProperties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) {
+         return device;
+      }
+   }
+
    return physicalDevices[0];
 }
 
